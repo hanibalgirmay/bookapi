@@ -4,9 +4,17 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma.service';
 import { UserModule } from './user/user.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { OrderModule } from './order/order.module';
+import { BookModule } from './book/book.module';
 
 @Module({
-  imports: [AuthModule, UserModule],
+  imports: [
+    EventEmitterModule.forRoot(),
+    AuthModule,
+    UserModule,
+    OrderModule,
+    BookModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
   exports: [PrismaService]

@@ -1,51 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from '../Dto/create.user.dto';
 import * as bcrypt from 'bcrypt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserCreatedListener } from '../Events/user-created-listener';
+import { INITIAL_POINTS } from 'src/utils/Constant';
+import { UserPointEvent } from '../Events/user-point.event';
+import { UserRepository } from '../Repository/user.respository';
 
 export const roundsOfHashing = 10;
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private userRepository: UserRepository) { }
 
-    async create(createUserDto: CreateUserDto) {
-        const hashedPassword = await bcrypt.hash(
-            createUserDto.password,
-            roundsOfHashing,
-        );
-
-        createUserDto.password = hashedPassword;
-
-        return this.prisma.user.create({
-            data: createUserDto,
-        });
+    create(createUserDto: CreateUserDto) {
+        return this.userRepository.create(createUserDto);
     }
 
     findAll() {
-        return this.prisma.user.findMany();
+        return this.userRepository.findAll();
     }
 
     findOne(id: number) {
-        return this.prisma.user.findUnique({ where: { id } });
+        return this.userRepository.findOne(id);
     }
 
-    async update(id: number, updateUserDto: CreateUserDto) {
-        if (updateUserDto.password) {
-            updateUserDto.password = await bcrypt.hash(
-                updateUserDto.password,
-                roundsOfHashing,
-            );
-        }
-
-        return this.prisma.user.update({
-            where: { id },
-            data: updateUserDto,
-        });
+    update(id: number, updateUserDto: CreateUserDto) {
+        return this.userRepository.update(id, updateUserDto);
     }
 
     remove(id: number) {
-        return this.prisma.user.delete({ where: { id } });
+        return this.userRepository.remove(id);
     }
 
 }

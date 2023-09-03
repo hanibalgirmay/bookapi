@@ -6,10 +6,49 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique()
-  name     String
-  password String
+  id        Int        @id @default(autoincrement())
+  email     String     @unique()
+  name      String
+  password  String
+  createdAt DateTime?  @default(now())
+  updatedAt DateTime?  @default(now()) @updatedAt
+  userPoint UserPoint?
+  Order     Order[]
+}
+
+model UserPoint {
+  id        Int       @id @default(autoincrement())
+  point     Int       @default(100)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @unique
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
+}
+
+model Book {
+  id          Int     @id @default(autoincrement())
+  title       String
+  writer      String
+  cover_image String?
+  point       Int
+  tag         Tag?
+  Order       Order[]
+}
+
+model Order {
+  id     Int  @id @default(autoincrement())
+  book   Book @relation(fields: [bookId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
+  price  Int?
+  bookId Int
+  userId Int
+}
+
+enum Tag {
+  FICTION
+  NON_FICTION
+  SCIENCE
+  ESSAY
 }
 
 datasource db {
