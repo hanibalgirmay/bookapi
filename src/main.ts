@@ -8,21 +8,29 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // RabbitMQ configuration
-  // const rabbitMQConfig: RabbitMQConfig = {
-  //   url: 'amqp://localhost:5672',
-  //   queue: 'bookapiQueue'
-  // };
+  const rabbitMQConfig: RabbitMQConfig = {
+    url: 'amqp://localhost:5672',
+    queue: 'bookapiQueue'
+  };
 
-  // app.connectMicroservice({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     urls: [rabbitMQConfig.url],
-  //     queue: rabbitMQConfig.queue,
-  //     queueOptions: {
-  //       durable: false,
-  //     },
-  //   },
-  // });
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbitMQConfig.url],
+      queue: rabbitMQConfig.queue,
+      queueOptions: {
+        durable: false,
+      },
+      options: {
+        credentials: {
+          username: 'guest',
+          password: 'guest',
+        },
+        authMechanism: 'plain',
+        authHeaders: [],
+      },
+    },
+  });
 
   await app.startAllMicroservices();
 
@@ -41,7 +49,7 @@ async function bootstrap() {
     bearerAuth: {
       type: 'http',
       scheme: 'bearer',
-      bearerFormat: '',
+      bearerFormat: 'JWT',
     },
   };
   // Include security requirement for protected routes

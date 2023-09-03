@@ -6,13 +6,11 @@ import { JwtStrategy } from 'src/auth/Strategy/jwt.strategy';
 import { JwtAuthGuard } from 'src/auth/Guard/jwt.auth.guard';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserRepository } from './Repository/user.respository';
-import { RabbitMQModule } from 'src/rabbitmq.module';
 
 @Module({
-  imports: 
-  [
-    // RabbitMQModule
-  ],
+  imports:
+    [
+    ],
   providers: [UserService, UserRepository, PrismaService, JwtAuthGuard, JwtStrategy],
   exports: [UserService],
   controllers: [UserController]

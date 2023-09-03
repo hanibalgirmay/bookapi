@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Request, Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { UserService } from '../Service/user.service';
 import { CreateUserDto } from '../Dto/create.user.dto';
 import { UserEntity } from '../Entity/user.entity';
@@ -12,7 +12,7 @@ export class UserController {
 
     @Post()
     @ApiCreatedResponse({ type: UserEntity })
-    async create(@Body() createUserDto: CreateUserDto) {
+    async create(@Body() createUserDto: CreateUserDto, @Request() req) {
         return new UserEntity(await this.userService.create(createUserDto));
     }
 
